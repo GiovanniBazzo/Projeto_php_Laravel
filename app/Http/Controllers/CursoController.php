@@ -2,45 +2,41 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Curso; 
 use Illuminate\Http\Request;
 
 class CursoController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    
     public function index()
     {
         //
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        //
+        return view('cursos.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
+        $dados = $request->validate([
+            'nome' => ['required', 'string', 'max:255'],
+            'descricao' => ['required', 'string']
+        ]);
+
+        Curso::create($dados);
+
+        return redirect()
+            ->route('curso.index')
+            ->with('sucess', 'Curso Criado com sucesso.');
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(string $id)
     {
         //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(string $id)
     {
         //
