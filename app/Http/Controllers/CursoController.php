@@ -2,15 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Curso; 
+use App\Models\Curso;
 use Illuminate\Http\Request;
 
 class CursoController extends Controller
 {
-    
     public function index()
     {
-        //
+        $cursos = Curso::query()
+            ->latest()
+            ->get();
+
+        return view('cursos.index', compact('cursos'));
     }
 
     public function create()
@@ -22,39 +25,41 @@ class CursoController extends Controller
     {
         $dados = $request->validate([
             'nome' => ['required', 'string', 'max:255'],
-            'descricao' => ['required', 'string']
+            'descricao' => ['required', 'string'],
         ]);
 
         Curso::create($dados);
 
         return redirect()
-            ->route('curso.index')
-            ->with('sucess', 'Curso Criado com sucesso.');
+            ->route('cursos.index')
+            ->with('success', 'Curso criado com sucesso.');
     }
 
-    public function show(string $id)
+    public function edit(Curso $curso)
     {
-        //
+        return view('cursos.edit', compact('curso'));
     }
 
-    public function edit(string $id)
+    public function update(Request $request, Curso $curso)
     {
-        //
+        $dados = $request->validate([
+            'nome' => ['required', 'string', 'max:255'],
+            'descricao' => ['required', 'string'],
+        ]);
+
+        $curso->update($dados);
+
+        return redirect()
+            ->route('cursos.index')
+            ->with('success', 'Curso atualizado com sucesso.');
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    public function destroy(Curso $curso)
     {
-        //
-    }
+        $curso->delete();
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        return redirect()
+            ->route('cursos.index')
+            ->with('success', 'Curso removido com sucesso.');
     }
 }
